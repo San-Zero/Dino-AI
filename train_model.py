@@ -12,13 +12,13 @@ import os
 import warnings
 warnings.filterwarnings("ignore")
 
-width = 80     # Width of all images
-height = 75    # Height of all images
+width = 80     # Width of all AI-database
+height = 75    # Height of all AI-database
 
 
-# A function for get images and their labels by given image paths
+# A function for get AI-database and their labels by given image paths
 def get_images_and_labels(images):
-    X = []      # A list for store the images
+    X = []      # A list for store the AI-database
     Y = []      # A list for store the labels
 
     for img_path in images:    
@@ -120,9 +120,9 @@ def plot_accuracy_and_loss():
 
 # MAIN PROGRAM
 if __name__ == "__main__":
-    images = glob.glob("./images/*.png")    # Get all image paths with glob
+    images = glob.glob("AI-database/*.png")    # Get all image paths with glob
 
-    X, Y = get_images_and_labels(images)    # Get images and their labels
+    X, Y = get_images_and_labels(images)    # Get AI-database and their labels
 
     plot_data() # Plot number of data categorical
 
@@ -144,4 +144,4 @@ if __name__ == "__main__":
     plot_confusion_matrix()     # Plot confusion matrix of trained model    
     
     open("model.json","w").write(model.to_json())
-    model.save_weights("weights.h5")
+    model.save_weights("weights.h6")

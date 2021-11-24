@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 # 设定文件路径
-img_path = './test.png'
+img_path = 'test.jpg'
 # Read image
 img = cv2.imread(img_path)
 
@@ -26,14 +26,11 @@ print("选中矩形区域")
 imCrop = img[y: y + h, x: x + w]
 
 # Display cropped image
-print(x)
-print('\t')
-print(y)
-print('\t')
-print(w)
-print('\t')
-print(h)
-print('\t')
+print("left: ", x)
+print("top: ", y)
+print("width: ", w)
+print("height: ", h)
+
 cv2.imshow("image_roi", imCrop)
 cv2.imwrite("image_roi.png", imCrop)
 cv2.waitKey(0)
