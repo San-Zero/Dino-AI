@@ -10,28 +10,29 @@ import matplotlib.pyplot as plt
 import glob
 import os
 import warnings
+
 warnings.filterwarnings("ignore")
 
-width = 80     # Width of all AI-database
-height = 75    # Height of all AI-database
+width = 80  # Width of all utils
+height = 75  # Height of all utils
 
 
-# A function for get AI-database and their labels by given image paths
+# A function for get utils and their labels by given image paths
 def get_images_and_labels(images):
-    X = []      # A list for store the AI-database
-    Y = []      # A list for store the labels
+    X = []  # A list for store the utils
+    Y = []  # A list for store the labels
 
-    for img_path in images:    
-        filename = os.path.basename(img_path)               # Get filename from img_path
-        label = filename.split("_")[0]                      # Get label from filename
-        grey_image = Image.open(img_path).convert("L")      # Convert RGB image to grey_scale image
+    for img_path in images:
+        filename = os.path.basename(img_path)  # Get filename from img_path
+        label = filename.split("_")[0]  # Get label from filename
+        grey_image = Image.open(img_path).convert("L")  # Convert RGB image to grey_scale image
         img = np.array(grey_image.resize((width, height)))  # Resize the grey image and convert it to numpy array
-        img = img / 255                                     # Normalize the image array
-        X.append(img)                                       # Append image array to X
-        Y.append(label)                                     # Append label to Y
+        img = img / 255  # Normalize the image array
+        X.append(img)  # Append image array to X
+        Y.append(label)  # Append label to Y
 
-    X = np.array(X)                                         # Convert list X to numpy array
-    X = X.reshape(X.shape[0], width, height, 1)             # Reshape the X
+    X = np.array(X)  # Convert list X to numpy array
+    X = X.reshape(X.shape[0], width, height, 1)  # Reshape the X
 
     return X, Y
 
@@ -40,30 +41,30 @@ def get_images_and_labels(images):
 def onehot_labels(labels):
     label_encoder = LabelEncoder()
     integer_encoded = label_encoder.fit_transform(labels)
-    onehot_encoder = OneHotEncoder(sparse = False)
-    integer_encoded = integer_encoded.reshape(len(integer_encoded),1)
+    onehot_encoder = OneHotEncoder(sparse=False)
+    integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
     onehot_labels = onehot_encoder.fit_transform(integer_encoded)
     return onehot_labels
 
 
 # A function for create a CNN model and return it
 def get_CNN_model():
-    model = Sequential()   
+    model = Sequential()
 
-    model.add(Conv2D(16, kernel_size=(3,3), activation="relu", input_shape=(width, height, 1)))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-    model.add(Conv2D(32, kernel_size=(3,3), activation="relu"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
-    model.add(Conv2D(64, kernel_size=(3,3), activation="relu"))
-    model.add(MaxPooling2D(pool_size=(2,2)))
+    model.add(Conv2D(16, kernel_size=(5, 5), activation="relu", input_shape=(width, height, 1)))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Conv2D(32, kernel_size=(5, 5), activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Conv2D(64, kernel_size=(5, 5), activation="relu"))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
 
     model.add(Flatten())
     model.add(Dense(128, activation="relu"))
-    model.add(Dropout(0.5)) # For regularization
+    model.add(Dropout(0.5))  # For regularization
     model.add(Dense(3, activation="softmax"))
 
     model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
-    
+
     return model
 
 
@@ -77,8 +78,8 @@ def plot_data():
     plt.show()
 
     # Plot number of the data for train and test set
-    train_size = int(len(images)*0.9)  # %90
-    test_size = int(len(images)*0.1)   # %10
+    train_size = int(len(images) * 0.9)  # %90
+    test_size = int(len(images) * 0.1)  # %10
     print('train: ' + str(train_size), ' - test: ' + str(test_size))
     sets = ['Train', 'Test']
     number_of_data = [train_size, test_size]
@@ -90,7 +91,7 @@ def plot_data():
 
 # Plot confusion matrix of trained model
 def plot_confusion_matrix():
-    y_pred = model.predict(test_X)  
+    y_pred = model.predict(test_X)
     y_pred = np.argmax(y_pred, axis=1)
     test_y_new = np.argmax(test_y, axis=1)
 
@@ -117,31 +118,30 @@ def plot_accuracy_and_loss():
     plt.show()
 
 
-
 # MAIN PROGRAM
 if __name__ == "__main__":
-    images = glob.glob("AI-database/*.png")    # Get all image paths with glob
+    images = glob.glob("./images/*.png")  # Get all image paths with glob
 
-    X, Y = get_images_and_labels(images)    # Get AI-database and their labels
+    X, Y = get_images_and_labels(images)  # Get utils and their labels
 
-    plot_data() # Plot number of data categorical
+    plot_data()  # Plot number of data categorical
 
-    Y = onehot_labels(Y)                    # Convert labels to onehot labels ==> down: 100, right: 010, up: 001
+    Y = onehot_labels(Y)  # Convert labels to onehot labels ==> down: 100, right: 010, up: 001
 
     train_X, test_X, train_y, test_y = train_test_split(X, Y, test_size=0.1, random_state=10)  # Split the dataset
     model = get_CNN_model()
-    print(model.summary()) # Print model summary
+    print(model.summary())  # Print model summary
 
-    history = model.fit(train_X, train_y, epochs=5, batch_size=64)
+    history = model.fit(train_X, train_y, epochs=10, batch_size=64)
 
     train_accuracy = model.evaluate(train_X, train_y)
-    print("Train accuracy: %", train_accuracy[1]*100)    
-        
-    test_accuracy = model.evaluate(test_X, test_y)
-    print("Test accuracy: %", test_accuracy[1]*100)   
+    print("Train accuracy: %", train_accuracy[1] * 100)
 
-    plot_accuracy_and_loss()    # Plot accuracy and loss of the model while training
-    plot_confusion_matrix()     # Plot confusion matrix of trained model    
-    
-    open("model.json","w").write(model.to_json())
-    model.save_weights("weights.h6")
+    test_accuracy = model.evaluate(test_X, test_y)
+    print("Test accuracy: %", test_accuracy[1] * 100)
+
+    plot_accuracy_and_loss()  # Plot accuracy and loss of the model while training
+    plot_confusion_matrix()  # Plot confusion matrix of trained model
+
+    open("model.json", "w").write(model.to_json())
+    model.save_weights("weights.h5")
