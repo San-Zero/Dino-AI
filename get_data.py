@@ -22,7 +22,7 @@ def take_screenshot(ss_id, key):
     print("{}: {}".format(key, count))
     img = ss_manager.grab(frame)
     image = Image.frombytes("RGB", img.size, img.rgb)
-    image.save("./AI-database/{}_{}_{}.png".format(key, ss_id, count))
+    image.save("./images/{}_{}_{}.png".format(key, ss_id, count))
 
 
 # A function for stopping the program
@@ -33,7 +33,7 @@ def exit():
 
 # MAIN PROGRAM
 if __name__ == '__main__':
-    Path("AI-database/").mkdir(parents=True, exist_ok=True)  # Create AI-database directory if not exist
+    Path("images/").mkdir(parents=True, exist_ok=True)  # Create images directory if not exist
     keyboard.add_hotkey("esc", exit)  # If user clik the 'esc', the program will stop
     ss_id = uuid.uuid4()  # An id for all screenshots
 

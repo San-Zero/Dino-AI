@@ -1,25 +1,25 @@
 import numpy as np
 import cv2
 
-# 设定文件路径
+# 設定文件路徑
 img_path = 'test.jpg'
 # Read image
 img = cv2.imread(img_path)
 
-# 创建一个窗口
+# 創建一個視窗
 cv2.namedWindow("image", flags=cv2.WINDOW_NORMAL | cv2.WINDOW_FREERATIO)
 cv2.namedWindow("image_roi", flags=cv2.WINDOW_NORMAL | cv2.WINDOW_FREERATIO)
 
 cv2.imshow("image", img)
-# 是否显示网格
+# 是否顯示網格
 showCrosshair = True
-# 如果为Ture的话 , 则鼠标的其实位置就作为了roi的中心
-# False: 从左上角到右下角选中区域
+# 如果為Ture的話 , 則鼠標的其實位置就作為了roi的中心
+# False: 從左上角到右下角選中區域
 fromCenter = False
 # Select ROI
 rect = cv2.selectROI("image", img, showCrosshair, fromCenter)
 
-print("选中矩形区域")
+print("選取的矩形區域")
 (x, y, w, h) = rect
 
 # Crop image
