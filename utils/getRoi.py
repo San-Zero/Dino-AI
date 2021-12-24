@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 # 設定文件路徑
-img_path = 'test.jpg'
+img_path = 'test.png'
 # Read image
 img = cv2.imread(img_path)
 
