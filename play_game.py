@@ -1,4 +1,6 @@
 import time
+
+import cv2
 from PIL import Image
 from mss import mss
 import keyboard
@@ -40,6 +42,12 @@ def exit():
     global is_exit
     is_exit = True
 
+# display current frame
+def current_frame(frame):
+    cv2.namedWindow("current frame", flags=cv2.WINDOW_NORMAL | cv2.WINDOW_FREERATIO)
+    cv2.imshow("current frame", frame)
+    cv2.imwrite("current.png", frame)
+    cv2.waitKey(0)
 
 # MAIN PROGRAM
 if __name__ == '__main__':
@@ -62,9 +70,9 @@ if __name__ == '__main__':
         a_img = np.array(grey_image.resize((width, height)))  # Resize the grey image and convert it to numpy array
         img = a_img / 255  # Normalize the image array
 
-        X = np.array([img])  # Convert list X to numpy array
-        X = X.reshape(X.shape[0], width, height, 1)  # Reshape the X
-        prediction = model.predict(X)  # Get prediction by using the model
+        arr_imgs = np.array([img])  # Convert list X to numpy array
+        arr_imgs = arr_imgs.reshape(arr_imgs.shape[0], width, height, 1)  # Reshape the X
+        prediction = model.predict(arr_imgs)  # Get prediction by using the model
 
         result = np.argmax(prediction)  # Convert one-hot prediction to the number
         print("--------------------------")

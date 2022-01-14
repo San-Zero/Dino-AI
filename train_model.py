@@ -19,8 +19,8 @@ height = 75  # Height of all utils
 
 # A function for get utils and their labels by given image paths
 def get_images_and_labels(images):
-    X = []  # A list for store the utils
-    Y = []  # A list for store the labels
+    list_imgs = []  # A list for store the utils
+    list_labels = []  # A list for store the labels
 
     for img_path in images:
         filename = os.path.basename(img_path)  # Get filename from img_path
@@ -28,13 +28,13 @@ def get_images_and_labels(images):
         grey_image = Image.open(img_path).convert("L")  # Convert RGB image to grey_scale image
         img = np.array(grey_image.resize((width, height)))  # Resize the grey image and convert it to numpy array
         img = img / 255  # Normalize the image array
-        X.append(img)  # Append image array to X
-        Y.append(label)  # Append label to Y
+        list_imgs.append(img)  # Append image array to X
+        list_labels.append(label)  # Append label to Y
 
-    X = np.array(X)  # Convert list X to numpy array
-    X = X.reshape(X.shape[0], width, height, 1)  # Reshape the X
+    arr_imgs = np.array(list_imgs)  # Convert list X to numpy array
+    arr_imgs = arr_imgs.reshape(arr_imgs.shape[0], width, height, 1)  # Reshape the X
 
-    return X, Y
+    return arr_imgs, list_labels
 
 
 # A function for convert labels to onehot labels for training
@@ -71,8 +71,8 @@ def get_CNN_model():
 # Plot number of data categorical
 def plot_data():
     # Plot number of the data for each class
-    sns.countplot(Y)
-    values, counts = np.unique(Y, return_counts=True)
+    sns.countplot(labels)
+    values, counts = np.unique(labels, return_counts=True)
     print(values, counts)
     plt.title('Number of data for each class')
     plt.show()
@@ -91,11 +91,11 @@ def plot_data():
 
 # Plot confusion matrix of trained model
 def plot_confusion_matrix():
-    y_pred = model.predict(test_X)
-    y_pred = np.argmax(y_pred, axis=1)
-    test_y_new = np.argmax(test_y, axis=1)
+    pred_imgs = model.predict(test_imgs)
+    pred_imgs = np.argmax(pred_imgs, axis=1)
+    test_labels_new = np.argmax(test_labels, axis=1)
 
-    cm = confusion_matrix(test_y_new, y_pred)
+    cm = confusion_matrix(test_labels_new, pred_imgs)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["down", "right", "up"])
 
     disp = disp.plot(include_values=True, cmap='Blues', ax=None, xticks_rotation='horizontal')
@@ -120,24 +120,24 @@ def plot_accuracy_and_loss():
 
 # MAIN PROGRAM
 if __name__ == "__main__":
-    images = glob.glob("./images/*.png")  # Get all image paths with glob
+    images = glob.glob("D:/AI-training/Dino/*.png")  # Get all image paths with glob
 
-    X, Y = get_images_and_labels(images)  # Get utils and their labels
+    imgs, labels = get_images_and_labels(images)  # Get utils and their labels
 
     plot_data()  # Plot number of data categorical
 
-    Y = onehot_labels(Y)  # Convert labels to onehot labels ==> down: 100, right: 010, up: 001
+    labels = onehot_labels(labels)  # Convert labels to onehot labels ==> down: 100, right: 010, up: 001
 
-    train_X, test_X, train_y, test_y = train_test_split(X, Y, test_size=0.1, random_state=10)  # Split the dataset
+    train_imgs, test_imgs, train_labels, test_labels = train_test_split(imgs, labels, test_size=0.1, random_state=10)  # Split the dataset
     model = get_CNN_model()
     print(model.summary())  # Print model summary
 
-    history = model.fit(train_X, train_y, epochs=10, batch_size=64)
+    history = model.fit(train_imgs, train_labels, epochs=10, batch_size=64)
 
-    train_accuracy = model.evaluate(train_X, train_y)
+    train_accuracy = model.evaluate(train_imgs, train_labels)
     print("Train accuracy: %", train_accuracy[1] * 100)
 
-    test_accuracy = model.evaluate(test_X, test_y)
+    test_accuracy = model.evaluate(test_imgs, test_labels)
     print("Test accuracy: %", test_accuracy[1] * 100)
 
     plot_accuracy_and_loss()  # Plot accuracy and loss of the model while training
