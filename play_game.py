@@ -7,7 +7,7 @@ import keyboard
 import numpy as np
 from keras.models import model_from_json
 
-frame = {"top": 140, "left": 653, "width": 256, "height": 123}  # Borders of the screenshot
+frame = {"top": 233, "left": 252, "width": 121, "height": 125}  # Borders of the screenshot
 ss_manager = mss()  # We are using mss() for taking a screenshot
 is_exit = False  # A variable for stopping the program
 my_timer = 0  # A variable which store the time passed
@@ -46,7 +46,7 @@ def exit():
 def current_frame(frame):
     cv2.namedWindow("current frame", flags=cv2.WINDOW_NORMAL | cv2.WINDOW_FREERATIO)
     cv2.imshow("current frame", frame)
-    cv2.imwrite("current.png", frame)
+    # cv2.imwrite("current.png", frame)
     cv2.waitKey(0)
 
 # MAIN PROGRAM
@@ -69,6 +69,8 @@ if __name__ == '__main__':
         grey_image = image.convert("L")  # Convert RGB image to grey_scale image
         a_img = np.array(grey_image.resize((width, height)))  # Resize the grey image and convert it to numpy array
         img = a_img / 255  # Normalize the image array
+
+        # current_frame(a_img)
 
         arr_imgs = np.array([img])  # Convert list X to numpy array
         arr_imgs = arr_imgs.reshape(arr_imgs.shape[0], width, height, 1)  # Reshape the X

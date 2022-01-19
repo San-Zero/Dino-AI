@@ -120,7 +120,7 @@ def plot_accuracy_and_loss():
 
 # MAIN PROGRAM
 if __name__ == "__main__":
-    images = glob.glob("D:/AI-training/Dino/*.png")  # Get all image paths with glob
+    images = glob.glob("D:/AI-training/Dino2/*.png")  # Get all image paths with glob
 
     imgs, labels = get_images_and_labels(images)  # Get utils and their labels
 
